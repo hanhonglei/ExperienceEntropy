@@ -1,0 +1,3 @@
+Cube	Perception,Area,Centerness,Blockness,Stayed frames	69.06821	33.99254	63.10096	110.1111	112
+Sphere	Perception,Area,Centerness,Blockness,Stayed frames	3.85377	1.325165	1.236146	9	9
+TestScene	Shannon entropy,Total frames	0.5973394	112

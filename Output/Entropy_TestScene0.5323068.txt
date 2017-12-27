@@ -1,0 +1,9 @@
+Perception info of game object: Cube
+Perception	Area	Centerness	Blockness	Stayed frames
+147.4718	79.63177	161.2281	201.5555	205
+Perception info of game object: Sphere
+Perception	Area	Centerness	Blockness	Stayed frames
+3.533602	1.600807	0	9	9
+Entropy info of scene: TestScene
+Shannon entropy	Total frames
+0.4428165	205
