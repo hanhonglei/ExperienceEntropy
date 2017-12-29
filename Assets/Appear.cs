@@ -99,10 +99,15 @@ public class Appear : MonoBehaviour
         Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
 
         // 和摄像机距离，依靠物体大小，计算投影面积
+        //float distFactor = (1 - (screenPos.z - cam.nearClipPlane) / (cullDist - cam.nearClipPlane));
+        //distFactor = distFactor < 0 ? 0 : distFactor;
+        //distFactor = distFactor > 1 ? 1 : distFactor;
         float us = maxside / (unprojectedsize * screenPos.z);
+        //us *= distFactor;
         us = us < 0 ? 0 : us;
         us = us > 1 ? 1 : us;
         area += us;
+        //Debug.Log("Area: " + us);
 
         // 物体中心在屏幕空间的坐标,-0.5到0.5之间
         float x = screenPos.x < 0 ? 0 : screenPos.x;

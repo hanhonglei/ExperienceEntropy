@@ -10,6 +10,10 @@ public class Shannon : MonoBehaviour
     int frames;             // total frames of this scene
     StreamWriter output;    // the output file
 
+    public GameObject answerUI;         // the answer UI when user study is done
+    public GameObject mathObjects;       // the objects' parent object including all potential perceptive objects
+    bool done = false;
+
     static float logtwo(float num)
     {
         return Mathf.Log(num) / Mathf.Log(2);
@@ -34,12 +38,49 @@ public class Shannon : MonoBehaviour
         allObjects = new List<float>();
         //RunEntropy("1234");
         frames = 0;
-        output = File.CreateText("Output/Entropy_" + SceneManager.GetActiveScene().name + Random.value+".txt");
+        string path;
+#if UNITY_EDITOR
+        path = "Output\\";
+#else
+         path = Application.dataPath + "\\Output\\";
+#endif
+        output = File.CreateText(path + "Entropy_" + SceneManager.GetActiveScene().name + Random.value + ".txt");
+
+        if (!answerUI)
+        {
+            answerUI = GameObject.FindGameObjectWithTag("AnswerUI");
+            answerUI.SetActive(false);
+        }
+        if (!mathObjects)
+        {
+            mathObjects = GameObject.FindGameObjectWithTag("MathObjects");
+        }
     }
 
     public StreamWriter GetOutput()
     {
         return output;
+    }
+    void Update()
+    {
+        if (!answerUI.activeSelf)
+        {
+            if (done)        // when user study scene is done, or user presses space bar
+            {
+                answerUI.SetActive(true);
+            }
+        }
+        else if (mathObjects.activeSelf)
+        {
+            // make sure answerUI is efficient after set active
+            answerUI.GetComponent<UserInputs>().BeginAnswer();
+
+            mathObjects.SetActive(false);
+            GetComponent<Camera>().enabled = false; // disable all perceptive objects
+                                // make mouse cursor visible
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     // Update is called once per frame
@@ -49,11 +90,10 @@ public class Shannon : MonoBehaviour
         {
             float entropy = RunEntropy(allObjects);
             Debug.Log("Total frames: " + frames);
-            output.Write(SceneManager.GetActiveScene().name 
+            output.Write(SceneManager.GetActiveScene().name
                 + "\tShannon entropy,Total frames\t");
             output.WriteLine(entropy + "\t" + frames);
-            output.Close();
-            Application.Quit();
+            done = true;
         }
     }
     void FixedUpdate()
@@ -68,11 +108,10 @@ public class Shannon : MonoBehaviour
     void OnApplicationQuit()
     {
         Debug.Log("Application quit");
+        output.Close();
     }
     void OnDestroy()
     {
     }
-    void OnApplicationFocus(bool hasFocus)
-    {
-    }
+
 }
