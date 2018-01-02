@@ -13,6 +13,10 @@ public class Shannon : MonoBehaviour
     public GameObject answerUI;         // the answer UI when user study is done
     public GameObject mathObjects;       // the objects' parent object including all potential perceptive objects
     bool done = false;
+    private bool calcShannonDone = false;
+
+    public float levelTime = 60.0f;     // how long the user study scene will last
+    private float currentTime = 0.0f;   // current time
 
     static float logtwo(float num)
     {
@@ -26,10 +30,10 @@ public class Shannon : MonoBehaviour
         foreach (float freq in table)
         {
             infoC += freq * logtwo(freq);
-            Debug.Log(freq);
+            //Debug.Log(freq);
         }
         infoC *= -1;
-        Debug.Log("The Entropy of is  " + infoC);
+        //Debug.Log("The Entropy of is  " + infoC);
         return infoC;
     }
     // Use this for initialization
@@ -67,6 +71,7 @@ public class Shannon : MonoBehaviour
         {
             if (done)        // when user study scene is done, or user presses space bar
             {
+                output.Flush();
                 answerUI.SetActive(true);
             }
         }
@@ -77,28 +82,47 @@ public class Shannon : MonoBehaviour
 
             mathObjects.SetActive(false);
             GetComponent<Camera>().enabled = false; // disable all perceptive objects
-                                // make mouse cursor visible
+                                                    // make mouse cursor visible
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
     }
-
-    // Update is called once per frame
     void LateUpdate()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (done && !calcShannonDone)
         {
             float entropy = RunEntropy(allObjects);
-            Debug.Log("Total frames: " + frames);
+            //Debug.Log("Total frames: " + frames);
             output.Write(SceneManager.GetActiveScene().name
-                + "\tShannon entropy,Total frames\t");
-            output.WriteLine(entropy + "\t" + frames);
-            done = true;
+                + ":\tShannon entropy,Total frames,Scene time\t");
+            output.WriteLine(entropy + "\t" + frames + "\t" + currentTime);
+            output.Flush();
+            //gameObject.SetActive(false);
+            calcShannonDone = true;
+            return;
+        }
+        if (!done)
+        {
+            currentTime += Time.deltaTime;
+            if (Input.GetKeyUp(KeyCode.Escape) || currentTime > levelTime)
+            {
+                done = true;
+            }
         }
     }
     void FixedUpdate()
     {
-        frames++;
+        if (!done)
+            frames++;
+    }
+    public bool IsDone()
+    {
+        return done;
+    }
+
+    public bool IsCalcShannonDone()
+    {
+        return calcShannonDone;
     }
 
     public void TellPerception(GameObject g, float f)
@@ -107,7 +131,7 @@ public class Shannon : MonoBehaviour
     }
     void OnApplicationQuit()
     {
-        Debug.Log("Application quit");
+        //Debug.Log("Application quit");
         output.Close();
     }
     void OnDestroy()

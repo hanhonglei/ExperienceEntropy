@@ -31,7 +31,7 @@ public class RecordPerception : Recorder
         get { return mathProblems; }
     }
     // Use this for initialization
-    void Start()
+    new void Start()
     {
         base.Start();
 

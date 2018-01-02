@@ -129,20 +129,22 @@ public class Appear : MonoBehaviour
     {
         StreamWriter file = cam.gameObject.GetComponent<Shannon>().GetOutput();
         file.Write(name
-            + "\tPerception,Area,Centerness,Blockness,Stayed frames\t");
+            + ":\tPerception,Area,Centerness,Blockness,Stayed frames\t");
         file.WriteLine(Perception() + "\t" + area + "\t" + centerness + "\t" + blockness + "\t" + times);
     }
     // Update is called once per frame
     void Update()
     {
         // if the esc key is pressed, then record all info then quit
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (cam.gameObject.GetComponent<Shannon>().IsDone() 
+            && !cam.gameObject.GetComponent<Shannon>().IsCalcShannonDone())
         {
             if (times > 0)
             {
                 OutputInfo();
                 cam.gameObject.GetComponent<Shannon>().TellPerception(gameObject, Perception());
             }
+            //Destroy(gameObject);
         }
     }
 

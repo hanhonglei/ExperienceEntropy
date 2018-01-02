@@ -11,9 +11,8 @@ public class UserInputs : MonoBehaviour
 {
     private InputField myInputField;        // input field for users
     private StreamWriter sr;                // record users' answer into this file
-    private List<Vector2> allMath;
+    private List<Vector2> allMath;          // 
     public Camera cam;
-
     // Use this for initialization
     void Start()
     {
@@ -26,11 +25,14 @@ public class UserInputs : MonoBehaviour
         myInputField = gameObject.GetComponentInChildren<InputField>();
         myInputField.Select();
         //Debug.Log(myInputField);
+        if (sr == null && cam != null)
+            sr = cam.gameObject.GetComponent<Shannon>().GetOutput();
+
     }
     // call this function automatically when the user answer UI becomes enable
     void OnEnable()
     {
-        myInputField.text = "Your answer";
+        myInputField.text = "Your answers here";
         EventSystem.current.SetSelectedGameObject(myInputField.gameObject);
         myInputField.ActivateInputField();
     }
@@ -39,7 +41,7 @@ public class UserInputs : MonoBehaviour
     {
         if (!cam)
             cam = Camera.main;
-        if(sr == null)
+        if (sr == null)
             sr = cam.gameObject.GetComponent<Shannon>().GetOutput();
         GameObject g = GameObject.FindGameObjectWithTag("MathObjects");
         if (!g)
@@ -47,27 +49,30 @@ public class UserInputs : MonoBehaviour
             return;
         }
         RecordPerception[] objs = g.GetComponentsInChildren<RecordPerception>();
+        sr.Write("All math problems: ");
         foreach (RecordPerception o in objs)
         {
             if (!o.GetComponentInChildren<Text>())
                 continue;
             foreach (Vector2 v in o.MathProblems)
             {
+                sr.Write(o.name + v + "\t");
                 allMath.Add(v);
             }
         }
+        sr.WriteLine();
     }
     // record user's answer into the file
     // and change to the next scene
-    public void InputDone(InputField input)
-    {
-        AnswerCorrect(input.text);
+    //public void InputDone(InputField input)
+    //{
+    //    AnswerCorrect(input.text);
 
-        //GameObject lm = GameObject.FindGameObjectsWithTag("GameController")[0];
-        //GameManager g = lm.GetComponent<GameManager>();
-        //g.PlayNextScene();
-        Application.Quit();
-    }
+    //    //GameObject lm = GameObject.FindGameObjectsWithTag("GameController")[0];
+    //    //GameManager g = lm.GetComponent<GameManager>();
+    //    //g.PlayNextScene();
+    //    Application.Quit();
+    //}
     // calculate user answer's correct percentage
     void AnswerCorrect(string answer)
     {
@@ -100,6 +105,16 @@ public class UserInputs : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        // when the participant press enter key, then record all information and quit the program
+        if (Input.GetKeyUp(KeyCode.Return))
+        {
+            Debug.Log("Got it" + myInputField.text);
+            AnswerCorrect(myInputField.text);
+            Application.Quit();
+        }
+        if (EventSystem.current.currentSelectedGameObject == null)
+        {
+            EventSystem.current.SetSelectedGameObject(myInputField.gameObject);
+        }
     }
 }
