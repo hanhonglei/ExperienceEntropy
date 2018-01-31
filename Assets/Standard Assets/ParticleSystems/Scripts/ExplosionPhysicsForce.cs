@@ -3,14 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace UnityStandardAssets.Effects
 {
     public class ExplosionPhysicsForce : MonoBehaviour
     {
         public float explosionForce = 4;
-        public bool enemyBullet = false;
-        public int maxDamage = 10;
 
 
         private IEnumerator Start()
@@ -28,20 +25,7 @@ namespace UnityStandardAssets.Effects
             {
                 if (col.attachedRigidbody != null && !rigidbodies.Contains(col.attachedRigidbody))
                 {
-                    if (enemyBullet)
-                    {
-                        if (col.gameObject.tag == "Player")
-                        {
-                            rigidbodies.Add(col.attachedRigidbody);
-                        }
-                    }
-                    else
-                    {
-                        if (col.gameObject.tag == "Enemy")
-                        {
-                            rigidbodies.Add(col.attachedRigidbody);
-                        }
-                    }
+                    rigidbodies.Add(col.attachedRigidbody);
                 }
             }
             foreach (var rb in rigidbodies)
