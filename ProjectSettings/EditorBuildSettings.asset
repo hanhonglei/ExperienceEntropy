@@ -11,3 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CompleteGame.unity
     guid: e75a3981c58221143a0dd2f1e7286608
+  - enabled: 1
+    path: Assets/Scenes/UserStudyA.unity
+    guid: 8174c1e77d8a5b14eb8d28df606bc2b5
+  - enabled: 1
+    path: Assets/Scenes/UserStudyB.unity
+    guid: 725b93aa72b35ca41aac833f02cbdd06

@@ -10,6 +10,7 @@ public class Appear : MonoBehaviour
     public int cullDist = 100;  // the furthest clipping plane
     float centerness, blockness, area;  // 3 factors used to evalute the perception, details can find here https://github.com/hanhonglei/UserAttentionUserStudy
     float maxside, unprojectedsize; // used to calculate the factor area
+    bool toldPerception = false;
     // Use this for initialization
     void Start()
     {
@@ -125,12 +126,16 @@ public class Appear : MonoBehaviour
         return true;
     }
     // output the info into the file
-    void OutputInfo()
+    public void OutputInfo()
     {
+        if (times <= 0 || toldPerception)
+            return;
         StreamWriter file = cam.gameObject.GetComponent<Shannon>().GetOutput();
-        file.Write(name
+        file.Write(name+transform.position
             + ":\tPerception,Area,Centerness,Blockness,Stayed frames\t");
         file.WriteLine(Perception() + "\t" + area + "\t" + centerness + "\t" + blockness + "\t" + times);
+        cam.gameObject.GetComponent<Shannon>().TellPerception(gameObject, Perception());
+        toldPerception = true;
     }
     // Update is called once per frame
     void Update()
@@ -139,11 +144,7 @@ public class Appear : MonoBehaviour
         if (cam.gameObject.GetComponent<Shannon>().IsDone() 
             && !cam.gameObject.GetComponent<Shannon>().IsCalcShannonDone())
         {
-            if (times > 0)
-            {
                 OutputInfo();
-                cam.gameObject.GetComponent<Shannon>().TellPerception(gameObject, Perception());
-            }
             //Destroy(gameObject);
         }
     }
@@ -168,9 +169,11 @@ public class Appear : MonoBehaviour
     // applicationQuit先被调用，OnDestroy函数后被调用
     void OnApplicationQuit()
     {
+        OutputInfo();
     }
     void OnDestroy()
     {
+        OutputInfo();
     }
 
 }

@@ -273,8 +273,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "There are 6 math problems scater in the scene. \nPlease try your best to
-    find them, and solve them.\nAnd finally input your answers after you \npress ESC
+  m_Text: "There are 6 two digit numbers scater in the scene. \nPlease try your best
+    to find and remember them.\nAnd finally input your answers after you \npress ESC
     key or the scene time runs out.\nPlease press Enter key to start the user study
     scene."
 --- !u!222 &891243086

@@ -11,12 +11,14 @@ public class UserInputs : MonoBehaviour
 {
     private InputField myInputField;        // input field for users
     private StreamWriter sr;                // record users' answer into this file
-    private List<Vector2> allMath;          // 
+    //private List<Vector2> allMath;          // all math problems in the objects
+    private List<int> allNumbers;           // all two digit numbers in the objects
     public Camera cam;
     // Use this for initialization
     void Start()
     {
-        allMath = new List<Vector2>();
+        //allMath = new List<Vector2>();
+        allNumbers = new List<int>();
         if (!cam)
             cam = Camera.main;
     }
@@ -49,16 +51,21 @@ public class UserInputs : MonoBehaviour
             return;
         }
         RecordPerception[] objs = g.GetComponentsInChildren<RecordPerception>();
-        sr.Write("All math problems: ");
+        //sr.Write("All math problems: ");
+        sr.Write("All two digit numbers: ");
         foreach (RecordPerception o in objs)
         {
             if (!o.GetComponentInChildren<Text>())
                 continue;
-            foreach (Vector2 v in o.MathProblems)
-            {
-                sr.Write(o.name + v + "\t");
-                allMath.Add(v);
-            }
+            // use two digit number instead of math problem
+            sr.Write(o.name + "\t" + o.TheNumber + "\t");
+            allNumbers.Add(o.TheNumber);
+
+            //foreach (Vector2 v in o.MathProblems)
+            //{
+            //    sr.Write(o.name + v + "\t");
+            //    allMath.Add(v);
+            //}
         }
         sr.WriteLine();
     }
@@ -78,23 +85,40 @@ public class UserInputs : MonoBehaviour
     {
         string[] a = answer.Split();
         int c = 0;
-        int n = allMath.Count;
+        //int n = allMath.Count;
+        int n = allNumbers.Count;
         sr.Write("Participant's answer: ");
+        // use two digit number
         foreach (string aa in a)
         {
-            foreach (Vector2 v in allMath)
+            foreach (int v in allNumbers)
             {
                 int aai = -1;
                 Int32.TryParse(aa, out aai);
-                if (aai == (int)(v.x + v.y))
+                if (aai == v)
                 {
                     c++;
-                    allMath.Remove(v);
+                    allNumbers.Remove(v);
                     break;
                 }
             }
             sr.Write("\t" + aa);
         }
+        //foreach (string aa in a)
+        //{
+        //    foreach (Vector2 v in allMath)
+        //    {
+        //        int aai = -1;
+        //        Int32.TryParse(aa, out aai);
+        //        if (aai == (int)(v.x + v.y))
+        //        {
+        //            c++;
+        //            allMath.Remove(v);
+        //            break;
+        //        }
+        //    }
+        //    sr.Write("\t" + aa);
+        //}
         sr.WriteLine();
 
         float f = (float)c * 100.0f / n;
@@ -110,7 +134,7 @@ public class UserInputs : MonoBehaviour
         {
             Debug.Log("Got it" + myInputField.text);
             AnswerCorrect(myInputField.text);
-            Application.Quit();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
         }
         if (EventSystem.current.currentSelectedGameObject == null)
         {

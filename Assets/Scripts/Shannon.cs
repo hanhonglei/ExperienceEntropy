@@ -50,9 +50,9 @@ public class Shannon : MonoBehaviour
 #endif
         output = File.CreateText(path + "Entropy_" + SceneManager.GetActiveScene().name + Random.value + ".txt");
 
-        if (!answerUI)
+        answerUI = GameObject.FindGameObjectWithTag("AnswerUI");
+        if (answerUI)
         {
-            answerUI = GameObject.FindGameObjectWithTag("AnswerUI");
             answerUI.SetActive(false);
         }
         if (!mathObjects)
@@ -67,38 +67,47 @@ public class Shannon : MonoBehaviour
     }
     void Update()
     {
-        if (!answerUI.activeSelf)
-        {
-            if (done)        // when user study scene is done, or user presses space bar
+        if (answerUI)
+            if (!answerUI.activeSelf)
             {
-                output.Flush();
-                answerUI.SetActive(true);
+                if (done)        // when user study scene is done, or user presses space bar
+                {
+                    output.Flush();
+                    answerUI.SetActive(true);
+                }
             }
-        }
-        else if (mathObjects.activeSelf)
-        {
-            // make sure answerUI is efficient after set active
-            answerUI.GetComponent<UserInputs>().BeginAnswer();
+            else if (mathObjects.activeSelf)
+            {
+                // make sure answerUI is efficient after set active
+                if (answerUI)
+                    answerUI.GetComponent<UserInputs>().BeginAnswer();
 
-            mathObjects.SetActive(false);
-            GetComponent<Camera>().enabled = false; // disable all perceptive objects
-                                                    // make mouse cursor visible
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+                mathObjects.SetActive(false);
+                GetComponent<Camera>().enabled = false; // disable all perceptive objects
+                                                        // make mouse cursor visible
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+    }
+    void CalcShannon()
+    {
+        if (calcShannonDone)
+            return;
+        float entropy = RunEntropy(allObjects);
+        //Debug.Log("Total frames: " + frames);
+        output.WriteLine();
+        output.Write(SceneManager.GetActiveScene().name
+            + ":\tShannon entropy,Total frames,Scene time\t");
+        output.WriteLine(entropy + "\t" + frames + "\t" + currentTime);
+        output.Flush();
+        //gameObject.SetActive(false);
+        calcShannonDone = true;
     }
     void LateUpdate()
     {
         if (done && !calcShannonDone)
         {
-            float entropy = RunEntropy(allObjects);
-            //Debug.Log("Total frames: " + frames);
-            output.Write(SceneManager.GetActiveScene().name
-                + ":\tShannon entropy,Total frames,Scene time\t");
-            output.WriteLine(entropy + "\t" + frames + "\t" + currentTime);
-            output.Flush();
-            //gameObject.SetActive(false);
-            calcShannonDone = true;
+            CalcShannon();
             return;
         }
         if (!done)
@@ -106,7 +115,7 @@ public class Shannon : MonoBehaviour
             currentTime += Time.deltaTime;
             if (Input.GetKeyUp(KeyCode.Escape) || currentTime > levelTime)
             {
-                done = true;
+                Done();
             }
         }
     }
@@ -119,6 +128,10 @@ public class Shannon : MonoBehaviour
     {
         return done;
     }
+    public void Done()
+    {
+        done = true;
+    }
 
     public bool IsCalcShannonDone()
     {
@@ -129,13 +142,10 @@ public class Shannon : MonoBehaviour
     {
         allObjects.Add(f / frames);
     }
-    void OnApplicationQuit()
-    {
-        //Debug.Log("Application quit");
-        output.Close();
-    }
     void OnDestroy()
     {
+        CalcShannon();
+        output.Close();
     }
 
 }

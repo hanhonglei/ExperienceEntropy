@@ -7,6 +7,9 @@ TagManager:
   - Obstacle
   - AnswerUI
   - MathObjects
+  - Fire
+  - AllObjects
+  - Waypoints
   layers:
   - Default
   - TransparentFX

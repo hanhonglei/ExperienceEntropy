@@ -20,6 +20,7 @@ public class RecordPerception : Recorder
     public float changeMathTime = 3.0f;     // how often to change to the next math problem
 
     private List<Vector2> mathProblems;     // math problems list
+    private int theNumber = -1;             // the two digit number displayed
 
     private float mathTime = 0.0f;          // indicate when to change to the next math problem 
     private int currentMath = 0;            // current math index in the math problems list
@@ -30,6 +31,10 @@ public class RecordPerception : Recorder
     {
         get { return mathProblems; }
     }
+    public int TheNumber
+    {
+        get { return theNumber; }
+    }
     // Use this for initialization
     new void Start()
     {
@@ -38,6 +43,7 @@ public class RecordPerception : Recorder
         // Generate question randomly [10/27/2016 Han]
         texts = gameObject.GetComponentsInChildren<Text>();
         GenerateMathProblems();
+        theNumber = Random.Range(10, 99);
         DisplayCurrentMath();
     }
     // generate math problems randomly
@@ -56,10 +62,11 @@ public class RecordPerception : Recorder
     {
         foreach (Text text in texts)
         {
-            int i = (int)(mathProblems[currentMath].x);
-            int j = (int)(mathProblems[currentMath].y);
-
-            text.text = i + "+" + j + "=?";
+            // use two digit number instead of math problem
+            text.text = theNumber.ToString();
+            //int i = (int)(mathProblems[currentMath].x);
+            //int j = (int)(mathProblems[currentMath].y);
+            //text.text = i + "+" + j + "=?";
         }
     }
     // Update is called once per frame
