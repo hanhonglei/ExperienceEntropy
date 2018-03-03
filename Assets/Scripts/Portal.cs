@@ -47,7 +47,7 @@ public class Portal : MonoBehaviour
 
         Time.timeScale = savedTimeScale;
         int next = SceneManager.GetActiveScene().buildIndex + 1;
-        Debug.Log(next + "\t" + SceneManager.sceneCountInBuildSettings);
+        //Debug.Log(next + "\t" + SceneManager.sceneCountInBuildSettings);
         if (next >= SceneManager.sceneCountInBuildSettings)
         {
             Application.Quit();

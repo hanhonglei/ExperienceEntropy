@@ -48,7 +48,7 @@ public class Shannon : MonoBehaviour
 #else
          path = Application.dataPath + "\\Output\\";
 #endif
-        output = File.CreateText(path + "Entropy_" + SceneManager.GetActiveScene().name + Random.value + ".txt");
+        output = File.CreateText(path + "Entropy_" + SceneManager.GetActiveScene().name + "_" + Random.value + ".txt");
 
         answerUI = GameObject.FindGameObjectWithTag("AnswerUI");
         if (answerUI)

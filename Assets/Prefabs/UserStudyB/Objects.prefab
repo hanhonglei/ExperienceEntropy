@@ -278,7 +278,6 @@ GameObject:
   - component: {fileID: 114514304153810438}
   - component: {fileID: 195713141221700054}
   - component: {fileID: 114284884830602050}
-  - component: {fileID: 114596639717170364}
   m_Layer: 0
   m_Name: Spirit
   m_TagString: Enemy
@@ -1530,20 +1529,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Fruit
---- !u!114 &114596639717170364
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1516811941844768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6181eaf77367ffd4bbbd7ba93bdd0a90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemType: 0
-  explosionEffect: {fileID: 0}
-  effectDurationTime: 5
 --- !u!114 &114655116703419710
 MonoBehaviour:
   m_ObjectHideFlags: 1

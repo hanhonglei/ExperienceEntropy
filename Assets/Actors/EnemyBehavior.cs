@@ -23,7 +23,10 @@ public class EnemyBehavior : Actor {
     private int wayPointIndex;                              // A counter for the way point array.
 
     private bool chase = false;                                     // 当遇到攻击或者在射击的时候玩家跑开的话
-	// Update is called once per frame
+
+    private Animator anim = null;
+
+    // Update is called once per frame
     //void Update () {
     //    if((int)(Random.value * 500) == 1)
     //        Fire(player.position);	
@@ -56,14 +59,25 @@ public class EnemyBehavior : Actor {
         Debug.Assert(enemySight);
         nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag(Tags.player).transform;
+        anim = GetComponentInChildren<Animator>();
+
         //Debug.Log(player);
         //playerHealth = player.GetComponent<PlayerHealth>();
         //lastPlayerSighting = GameObject.FindGameObjectWithTag("GameController").GetComponent<LastPlayerSighting>();
     }
-    
-    
+
+
     void Update ()
     {
+        if (anim)
+        {
+            anim.SetFloat("vSpeed", nav.speed);
+            anim.SetBool("attack", false);
+            anim.SetBool("isRun", false);
+            anim.SetBool("crippled", false);
+
+        }
+
         //Debug.Log("Update!");
         // If the player is in sight and is alive...
         if (enemySight.playerInSight /*&& player.gameObject.GetComponent<PlayerControl>().health > 0f*/)
@@ -83,7 +97,6 @@ public class EnemyBehavior : Actor {
         // ... patrol.
         {
             Patrolling();
-            //Debug.Log("Patrol!");
         }
     }
 
@@ -101,6 +114,11 @@ public class EnemyBehavior : Actor {
     
     void Shooting ()
     {
+        if(anim)
+        {
+            anim.SetBool("attack", true);            
+        }
+
         Vector3 lookPos = player.position;
         lookPos.y = transform.position.y;
 
@@ -112,15 +130,23 @@ public class EnemyBehavior : Actor {
         //transform.LookAt(lookPos);
         // Stop the enemy where it is.
         Fire(player.position);
-        nav.Stop();
+        nav.isStopped = true;
              //Debug.Log("Shoot player!");
    }
     
     
     void Chasing ()
     {
+        if (anim)
+        {
+            anim.SetBool("isRun", true);
+            anim.SetBool("crippled", false);
+            anim.SetBool("attack", false);
+
+        }
+
         //Debug.Log("Chasing");
-        nav.Resume();
+        nav.isStopped = false;
         StopFire();
         // Create a vector from the enemy to the last sighting of the player.
         Vector3 sightingDeltaPos = enemySight.personalLastSighting - transform.position;
@@ -145,6 +171,7 @@ public class EnemyBehavior : Actor {
                 // ... reset last global sighting, the last personal sighting and the timer.
                 //lastPlayerSighting.position = lastPlayerSighting.resetPosition;
                 chase = false;
+                Debug.Log("stop chasing");
                 chaseTimer = 0f;
             }
         }
@@ -156,7 +183,14 @@ public class EnemyBehavior : Actor {
     
     void Patrolling ()
     {
-        nav.Resume();
+        if (anim)
+        {
+            anim.SetBool("crippled", true);
+            anim.SetBool("isRun", false);
+            anim.SetBool("attack", false);
+        }
+
+        nav.isStopped = false;
         StopFire();
         // Set an appropriate speed for the NavMeshAgent.
         nav.speed = patrolSpeed;

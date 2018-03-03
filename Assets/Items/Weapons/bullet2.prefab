@@ -108,7 +108,7 @@ MonoBehaviour:
   numRandomRange: 20
   itemType: 1
   level: 0
-  speed: 50
+  speed: 30
   damage: 20
   explosionEffect: {fileID: 100006, guid: 0438351a6e6422d43a09930e9be00ee9, type: 2}
   effectDurationTime: 2

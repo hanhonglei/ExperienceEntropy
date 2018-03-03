@@ -27,6 +27,7 @@ public class EnemySight : MonoBehaviour
         // If the player has entered the trigger sphere...
         if (other.gameObject == player)
         {
+            /*
             // By default the player is not in sight.
             playerInSight = false;
 
@@ -56,6 +57,10 @@ public class EnemySight : MonoBehaviour
                     }
                 }
             }
+            */
+            personalLastSighting = player.transform.position;
+            playerInSight = true;
+
         }
     }
 
@@ -63,7 +68,10 @@ public class EnemySight : MonoBehaviour
     {
         // If the player leaves the trigger zone...
         if (other.gameObject == player)
+        {
             // ... the player is not in sight.
             playerInSight = false;
+            Debug.Log("Player goes out of the sight");
+        }
     }
 }

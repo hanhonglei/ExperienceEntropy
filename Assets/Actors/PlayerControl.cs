@@ -8,6 +8,7 @@ public class PlayerControl : Actor
     int nKill = 0;
     private GameObject kills;
     private GameObject hurts;
+    private AttackZone attackZone;
 
     public void HitMe()
     {
@@ -35,6 +36,15 @@ public class PlayerControl : Actor
         hurts = canvas.Find("Hurts").gameObject;
         hurts.GetComponent<Text>().text = "Received damage: " + nHurt;
         kills.GetComponent<Text>().text = "Have killed: " + nKill;
+        attackZone = transform.Find("AttackZoneObj").gameObject.GetComponent<AttackZone>();
+    }
+    void NearAttack()
+    {
+        if(attackZone.CurrentEnemy())
+        {
+            attackZone.CurrentEnemy().Damage(1000.0f);
+            Debug.Log("Kill enemy");
+        }
     }
     // Update is called once per frame
     void Update()
@@ -43,15 +53,15 @@ public class PlayerControl : Actor
         {
             if (!m_Animator.GetBool("Shooting"))
                 m_Animator.SetBool("Shooting", true);
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float enter = 0.0f;
-            Plane firePlane = new Plane(Vector3.up, weaponPos.position);
-            if (firePlane.Raycast(ray, out enter))
-            {
-                desPos = ray.GetPoint(enter);
-            }
-            Fire(desPos);
+            NearAttack();
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //float enter = 0.0f;
+            //Plane firePlane = new Plane(Vector3.up, weaponPos.position);
+            //if (firePlane.Raycast(ray, out enter))
+            //{
+            //    desPos = ray.GetPoint(enter);
+            //}
+            //Fire(desPos);
         }
         else
             m_Animator.SetBool("Shooting", false);
