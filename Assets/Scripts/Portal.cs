@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Portal : MonoBehaviour
+public class Portal : InteractiveItem
 {
     private GameObject ui;
     private float savedTimeScale;
@@ -22,10 +22,11 @@ public class Portal : MonoBehaviour
 
     }
     // give the player options: next level, or stay in this level?
-    void OnTriggerEnter(Collider other)
+    override public void OnTriggerEnter(Collider other)
     {
         if (other.tag != "Player")
             return;
+
 
         ui.SetActive(true);
 
@@ -34,6 +35,7 @@ public class Portal : MonoBehaviour
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        base.OnTriggerEnter(other);
     }
 
     public void OnNextLevel()

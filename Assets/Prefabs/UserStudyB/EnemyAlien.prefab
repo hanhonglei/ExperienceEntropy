@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 195269612815825420}
   - component: {fileID: 114048362001301760}
   - component: {fileID: 114454010602388924}
+  - component: {fileID: 114576323119155634}
   m_Layer: 0
   m_Name: EnemyAlien
   m_TagString: Enemy
@@ -1192,6 +1193,20 @@ MonoBehaviour:
   fieldOfViewAngle: 200
   playerInSight: 0
   personalLastSighting: {x: 0, y: 0, z: 0}
+--- !u!114 &114576323119155634
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1179687428223842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6181eaf77367ffd4bbbd7ba93bdd0a90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemType: 6
+  explosionEffect: {fileID: 0}
+  effectDurationTime: 5
 --- !u!135 &135164526784859458
 SphereCollider:
   m_ObjectHideFlags: 1

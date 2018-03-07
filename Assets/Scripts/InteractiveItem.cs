@@ -2,36 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Type { TreasureBox, Cockroach, Vase, Pedestrian, Fruit, Spirit, Portal };
+public enum Type {Default, TreasureBox, Stepable, Uninteractable, Pedestrian, Fruit, Spirit, Portal};
 
 public class InteractiveItem : MonoBehaviour
 {
     public Type itemType;
     public GameObject explosionEffect = null;
     public float effectDurationTime = 5.0f;
+    private Animator anim = null;
+    private int interactionTime = 0;
+    private bool rotating = false;
+    private Quaternion origQ;
 
     public virtual void OnTriggerEnter(Collider other)
     {
         if (other.tag != Tags.player)
             return;
+        if (explosionEffect)
+        {
+            GameObject g = (GameObject)GameObject.Instantiate(explosionEffect, transform.position, transform.rotation);
+            Destroy(g, effectDurationTime);
+        }
         switch (itemType)
         {
             case Type.TreasureBox:
 
-            case Type.Cockroach:
-
             case Type.Fruit:
-
-            case Type.Vase:
-                if (explosionEffect)
+                if (anim)
                 {
-                    GameObject g = (GameObject)GameObject.Instantiate(explosionEffect, transform.position, transform.rotation);
-                    Destroy(g, effectDurationTime);
+                    anim.SetTrigger("rotate");
                 }
-                GameObject.Destroy(gameObject);
                 break;
+
+            case Type.Uninteractable:
+                break;
+            case Type.Stepable:
             case Type.Pedestrian:
-                transform.Translate(other.transform.forward * 3);
+                //transform.Translate(other.transform.forward * 3);
+                if(anim)
+                {
+                    anim.SetTrigger("DeathTrigger");
+                }
                 break;
             case Type.Portal:
                 break;
@@ -41,14 +52,29 @@ public class InteractiveItem : MonoBehaviour
             default:
                 break;
         }
-
+        interactionTime++;
         other.gameObject.GetComponent<PlayerControl>().PickupItem(gameObject);
-        Destroy(gameObject);
+    }
+    // give the player options: next level, or stay in this level?
+    void OnTriggerStay(Collider other)
+    {
+        if (other.tag != Tags.player)
+            return;
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag != Tags.player)
+            return;
+    }
+    public int InteractionTimes()
+    {
+        return interactionTime;
     }
     // Use this for initialization
     void Start()
     {
-
+        anim = GetComponent<Animator>();
+        origQ = transform.rotation;
     }
 
     // Update is called once per frame

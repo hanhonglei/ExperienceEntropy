@@ -131,9 +131,13 @@ public class Appear : MonoBehaviour
         if (times <= 0 || toldPerception)
             return;
         StreamWriter file = cam.gameObject.GetComponent<Shannon>().GetOutput();
-        file.Write(name+transform.position
-            + ":\tPerception,Area,Centerness,Blockness,Stayed frames\t");
-        file.WriteLine(Perception() + "\t" + area + "\t" + centerness + "\t" + blockness + "\t" + times);
+        file.Write(name + transform.position
+            + ":\tPerception,Area,Centerness,Blockness,Stayed frames,Interaction type and times\t");
+        InteractiveItem ii = GetComponent<InteractiveItem>();
+        int interactionTimes = ii == null ? 0 : ii.InteractionTimes();
+        Type it = ii == null ? Type.Default : ii.itemType;
+        file.WriteLine(Perception() + "\t" + area + "\t" + centerness + "\t" + blockness + "\t" + times 
+            + "\t" + it + "\t" + interactionTimes);
         cam.gameObject.GetComponent<Shannon>().TellPerception(gameObject, Perception());
         toldPerception = true;
     }
@@ -141,10 +145,10 @@ public class Appear : MonoBehaviour
     void Update()
     {
         // if the esc key is pressed, then record all info then quit
-        if (cam.gameObject.GetComponent<Shannon>().IsDone() 
+        if (cam.gameObject.GetComponent<Shannon>().IsDone()
             && !cam.gameObject.GetComponent<Shannon>().IsCalcShannonDone())
         {
-                OutputInfo();
+            OutputInfo();
             //Destroy(gameObject);
         }
     }
@@ -174,6 +178,7 @@ public class Appear : MonoBehaviour
     void OnDestroy()
     {
         OutputInfo();
+        Debug.Log(name + "destroy");
     }
 
 }
