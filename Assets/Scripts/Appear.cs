@@ -36,13 +36,13 @@ public class Appear : MonoBehaviour
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(cam);
         if (!GeometryUtility.TestPlanesAABB(planes, gameObject.GetComponent<Collider>().bounds))
             return false;
+
         // 后续是利用射线判断当前物体是否被其他物体遮挡
         Vector3 bound = GetComponent<Collider>().bounds.extents;
         var dist = Vector3.Distance(GetComponent<Collider>().bounds.center/*使用collider中心位置transform.position*/
             , cam.transform.position) - bound.y;
         if (dist > cullDist) // 如果超过最远距离，则不进行计算
             return false;
-
         // 自己进行遮挡率估算.将模型中心,8个角分别投射射线给摄像机,最后计算比例,记为遮挡率
         var ray = new Ray[9];
         var org = cam.transform.position;
@@ -158,6 +158,7 @@ public class Appear : MonoBehaviour
         // calculate the perception factors
         if (PerceptionByFrame())
         {
+
             times++;
             //Debug.Log("In");
         }
@@ -178,7 +179,6 @@ public class Appear : MonoBehaviour
     void OnDestroy()
     {
         OutputInfo();
-        Debug.Log(name + "destroy");
     }
 
 }

@@ -10,6 +10,9 @@ TagManager:
   - Fire
   - AllObjects
   - Waypoints
+  - Enemy
+  - Item
+  - AttackZone
   layers:
   - Default
   - TransparentFX

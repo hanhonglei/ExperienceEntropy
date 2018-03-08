@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Type {Default, TreasureBox, Stepable, Uninteractable, Pedestrian, Fruit, Spirit, Portal};
+public enum Type { Default, TreasureBox, Stepable, Uninteractable, Pedestrian, Fruit, Spirit, Portal };
 
 public class InteractiveItem : MonoBehaviour
 {
@@ -16,7 +16,12 @@ public class InteractiveItem : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        if (other.tag != Tags.player)
+        if (tag == Tags.enemy)
+        {
+            if (other.tag != "AttackZone")
+                return;
+        }
+        else if (other.tag != Tags.player)
             return;
         if (explosionEffect)
         {
@@ -39,7 +44,7 @@ public class InteractiveItem : MonoBehaviour
             case Type.Stepable:
             case Type.Pedestrian:
                 //transform.Translate(other.transform.forward * 3);
-                if(anim)
+                if (anim)
                 {
                     anim.SetTrigger("DeathTrigger");
                 }
@@ -53,7 +58,9 @@ public class InteractiveItem : MonoBehaviour
                 break;
         }
         interactionTime++;
-        other.gameObject.GetComponent<PlayerControl>().PickupItem(gameObject);
+        PlayerControl pc = other.gameObject.GetComponent<PlayerControl>();
+        if (pc)
+            pc.PickupItem(gameObject);
     }
     // give the player options: next level, or stay in this level?
     void OnTriggerStay(Collider other)
