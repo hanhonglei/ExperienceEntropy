@@ -13,6 +13,7 @@ public class InteractiveItem : MonoBehaviour
     private int interactionTime = 0;
     private bool rotating = false;
     private Quaternion origQ;
+    Shannon shn = null;
 
     public virtual void OnTriggerEnter(Collider other)
     {
@@ -23,6 +24,8 @@ public class InteractiveItem : MonoBehaviour
         }
         else if (other.tag != Tags.player)
             return;
+        if (interactionTime > 0 && itemType != Type.Uninteractable)
+            return;
         if (explosionEffect)
         {
             GameObject g = (GameObject)GameObject.Instantiate(explosionEffect, transform.position, transform.rotation);
@@ -31,12 +34,13 @@ public class InteractiveItem : MonoBehaviour
         switch (itemType)
         {
             case Type.TreasureBox:
-
             case Type.Fruit:
+                //GetComponent<Collider>().isTrigger = false;
                 if (anim)
                 {
                     anim.SetTrigger("rotate");
                 }
+                GameObject.Destroy(gameObject, effectDurationTime);
                 break;
 
             case Type.Uninteractable:
@@ -48,6 +52,7 @@ public class InteractiveItem : MonoBehaviour
                 {
                     anim.SetTrigger("DeathTrigger");
                 }
+                GameObject.Destroy(gameObject, effectDurationTime);
                 break;
             case Type.Portal:
                 break;
@@ -58,9 +63,11 @@ public class InteractiveItem : MonoBehaviour
                 break;
         }
         interactionTime++;
-        PlayerControl pc = other.gameObject.GetComponent<PlayerControl>();
+        PlayerControl pc = other.gameObject.GetComponentInParent<PlayerControl>();
         if (pc)
             pc.PickupItem(gameObject);
+        if (shn)
+            shn.Interact(gameObject);
     }
     // give the player options: next level, or stay in this level?
     void OnTriggerStay(Collider other)
@@ -82,6 +89,7 @@ public class InteractiveItem : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         origQ = transform.rotation;
+        shn = Camera.main.gameObject.GetComponent<Shannon>();
     }
 
     // Update is called once per frame

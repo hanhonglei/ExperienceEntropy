@@ -141,4 +141,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 1
   explosionEffect: {fileID: 0}
-  effectDurationTime: 5
+  effectDurationTime: 1

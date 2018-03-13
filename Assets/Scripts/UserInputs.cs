@@ -125,6 +125,7 @@ public class UserInputs : MonoBehaviour
 
         StreamWriter file = cam.gameObject.GetComponent<Shannon>().GetOutput();
         file.WriteLine("User answer accuracy is:\t" + f.ToString("F") + "%");
+        file.WriteLine(cam.gameObject.GetComponent<Shannon>().CalcShannon() + "\t" + f.ToString("F"));
     }
     // Update is called once per frame
     void Update()
@@ -132,9 +133,8 @@ public class UserInputs : MonoBehaviour
         // when the participant press enter key, then record all information and quit the program
         if (Input.GetKeyUp(KeyCode.Return))
         {
-            Debug.Log("Got it" + myInputField.text);
             AnswerCorrect(myInputField.text);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
         if (EventSystem.current.currentSelectedGameObject == null)
         {

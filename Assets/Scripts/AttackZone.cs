@@ -10,8 +10,6 @@ public class AttackZone : MonoBehaviour {
     {
         if (other.tag != "Enemy")
             return;       
-        Debug.Log("Staying"+other.name);
-
         EnemyBehavior e = other.gameObject.GetComponent<EnemyBehavior>();
         if (!e)
             return;
@@ -30,7 +28,6 @@ public class AttackZone : MonoBehaviour {
         EnemyBehavior e = other.gameObject.GetComponent<EnemyBehavior>();
         if (e == enemy)
             enemy = null;
-        Debug.Log("Exit!");
     }
         // Use this for initialization
         void Start () {

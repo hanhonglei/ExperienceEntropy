@@ -14,9 +14,16 @@ public class Shannon : MonoBehaviour
     public GameObject mathObjects;       // the objects' parent object including all potential perceptive objects
     bool done = false;
     private bool calcShannonDone = false;
+    private float shannonValue = 0.0f;
 
-    public float levelTime = 60.0f;     // how long the user study scene will last
+    //public float levelTime = 60.0f;     // how long the user study scene will last
     private float currentTime = 0.0f;   // current time
+
+    int nTreasures = 0;
+    int nNpc = 0;
+    int nEnemies = 0;
+    int nInteractions = 0;
+
 
     static float logtwo(float num)
     {
@@ -89,19 +96,48 @@ public class Shannon : MonoBehaviour
                 Cursor.visible = true;
             }
     }
-    void CalcShannon()
+    public void Interact(GameObject item)
+    {
+        InteractiveItem it = item.GetComponent<InteractiveItem>();
+        if (it == null)
+            return;
+
+        switch (it.itemType)
+        {
+            case Type.TreasureBox:
+            case Type.Fruit:
+                nTreasures++;
+                nInteractions++;
+                break;
+            case Type.Stepable:
+            case Type.Pedestrian:
+                nNpc++;
+                nInteractions++;
+                break;
+            case Type.Spirit:
+                nEnemies++;
+                nInteractions++;
+                break;
+            default:
+                break;
+        }
+    }
+    public float CalcShannon()
     {
         if (calcShannonDone)
-            return;
-        float entropy = RunEntropy(allObjects);
+            return shannonValue;
+        shannonValue = RunEntropy(allObjects);
         //Debug.Log("Total frames: " + frames);
         output.WriteLine();
         output.Write(SceneManager.GetActiveScene().name
             + ":\tShannon entropy,Total frames,Scene time\t");
-        output.WriteLine(entropy + "\t" + frames + "\t" + currentTime);
+        output.WriteLine(shannonValue + "\t" + frames + "\t" + currentTime);
+        output.WriteLine("Interactions, treasure, npc, enemy\t" + nInteractions + "\t" + nTreasures + "\t" + nNpc + "\t" + nEnemies);
+
         output.Flush();
         //gameObject.SetActive(false);
         calcShannonDone = true;
+        return shannonValue;
     }
     void LateUpdate()
     {
@@ -113,10 +149,12 @@ public class Shannon : MonoBehaviour
         if (!done)
         {
             currentTime += Time.deltaTime;
-            if (Input.GetKeyUp(KeyCode.Escape) || currentTime > levelTime)
-            {
-                Done();
-            }
+            // do not set scene time limit
+            if (SceneManager.GetActiveScene().name != "UserStudyB")
+                if (Input.GetKeyUp(KeyCode.Escape) /*|| currentTime > levelTime*/)
+                {
+                    Done();
+                }
         }
     }
     void FixedUpdate()

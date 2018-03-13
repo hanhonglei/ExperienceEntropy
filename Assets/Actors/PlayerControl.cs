@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 public class PlayerControl : Actor
 {
     int nHurt = 0;
     int nKill = 0;
+    int nItems = 0;
     private GameObject kills;
     private GameObject hurts;
+    private GameObject items;
     private AttackZone attackZone;
 
     public void HitMe()
@@ -34,8 +37,10 @@ public class PlayerControl : Actor
         Transform canvas = transform.Find("Canvas");
         kills = canvas.Find("Kills").gameObject;
         hurts = canvas.Find("Hurts").gameObject;
+        items = canvas.Find("Items").gameObject;
         hurts.GetComponent<Text>().text = "Received damage: " + nHurt;
         kills.GetComponent<Text>().text = "Have killed: " + nKill;
+        items.GetComponent<Text>().text = "Interactions: " + nItems;
         attackZone = transform.Find("AttackZoneObj").gameObject.GetComponent<AttackZone>();
     }
     void NearAttack()
@@ -43,7 +48,6 @@ public class PlayerControl : Actor
         if(attackZone.CurrentEnemy())
         {
             attackZone.CurrentEnemy().Damage(1000.0f);
-            Debug.Log("Kill enemy");
         }
     }
     // Update is called once per frame
@@ -69,12 +73,6 @@ public class PlayerControl : Actor
         {
             StopFire();
         }
-        // 更换武器
-        float f = Input.GetAxis("Mouse ScrollWheel");
-        if (f > 0)
-            NextWeapon(1);
-        else if (f < 0)
-            NextWeapon(-1);
     }
     protected override void Die()
     {
@@ -102,26 +100,30 @@ public class PlayerControl : Actor
         //Debug.Log("Changed Weapon");
         return true;
     }
+
     public void PickupItem(GameObject item)
     {
-        Item it = item.GetComponent<Item>();
-        if (!it || it.tag != Tags.item)
+        InteractiveItem it = item.GetComponent<InteractiveItem>();
+        if (it == null)
             return;
 
-        switch (item.GetComponent<Item>().itemType)
+        switch (it.itemType)
         {
-            case ItemType.Weapon:
-                PickupWeapon(item.GetComponent<Weapon>());
+            case Type.TreasureBox:
+            case Type.Fruit:
+                nItems++;
                 break;
-            case ItemType.Bullet:
-                PickupBullet(item.GetComponent<Bullet>());
+            case Type.Stepable:
+            case Type.Pedestrian:
+                nItems++;
                 break;
-            case ItemType.Health:
-                health += it.num;
+            case Type.Spirit:
+                nItems++;
                 break;
             default:
                 break;
         }
+        items.GetComponent<Text>().text = "Interactions: " + nItems;
     }
     private void PickupWeapon(Weapon w)
     {
