@@ -13,3 +13,7 @@ The second one is a mini RPG game scene. The participant is asked to explore the
 The value of experience information along with other necessary user behaviour data will be saved into a file located in the folder named Output under the folder of Exe_Data.
 
 The exctue appliaction, the Bartle’s taxonomy application, and more results can be download from the cloud [here](https://pan.baidu.com/s/1r_knmdVb4JgEEuprA4ZYsw).
+
+----
+
+- This project is under [GNU GENERAL PUBLIC LICENSE](https://www.gnu.org/licenses/), please check it in the root folder.
